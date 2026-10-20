@@ -14,6 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import org.jspecify.annotations.NonNull;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 public class MainActivity extends AppCompatActivity {
     LocationManager locationManager;
@@ -29,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         textView=findViewById(R.id.textView);
+        MapView mapView=findViewById(R.id.mapview);
         locationManager=(LocationManager) getSystemService(LOCATION_SERVICE);
+        org.osmdroid.config.Configuration.getInstance().setUserAgentValue(getPackageName());
 
         //verifica se a permissão já foi concluida.
         if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
@@ -38,6 +42,15 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(l.getLatitude()+","+l.getLongitude());
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, location ->{
                textView.setText(location.getLatitude()+","+location.getLongitude());
+               //inicia mapa
+                mapView.getController().setZoom(18);
+                mapView.getController().setCenter(
+                        new org.osmdroid.util.GeoPoint(location.getLatitude(), location.getLongitude())
+                );
+                mapView.getOverlays().clear();
+                Marker marker = new org.osmdroid.views.overlay.Marker(mapView);
+                marker.setPosition(new org.osmdroid.util.GeoPoint(location.getLatitude(), location.getLongitude()));
+                mapView.invalidate();
             });
         } else {
             //solicitar permissão em tempo de execução.
