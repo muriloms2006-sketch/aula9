@@ -1,5 +1,7 @@
 package com.example.locationmanagaer;
 
+import android.Manifest;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,7 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-
+    locationManager locationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +22,12 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        locationManager=(LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //solicitar permissão em tempo de execução.
+
+        if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)){
+            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
     }
 }
